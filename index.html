@@ -3,433 +3,439 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KristoShop | Boutique Code Shop</title>
+    <title>KristoShop | Premium Engineering</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
-    <!-- Stripe SDK -->
-    <script src="https://js.stripe.com/v3/"></script>
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700;900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&family=Space+Grotesk:wght@300;500;700&display=swap');
         
         :root {
             --brand-orange: #FF6B00;
         }
 
         body {
-            font-family: 'Inter', sans-serif;
-            background-color: #050505;
-            color: white;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #030303;
+            color: #ffffff;
             overflow-x: hidden;
         }
 
+        .font-heading { font-family: 'Space Grotesk', sans-serif; }
+
         .glass {
-            background: rgba(0, 0, 0, 0.6);
-            backdrop-filter: blur(24px);
-            -webkit-backdrop-filter: blur(24px);
+            background: rgba(10, 10, 10, 0.7);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        .selection-orange::selection {
-            background-color: var(--brand-orange);
-            color: black;
+        .hero-mesh {
+            background-image: 
+                radial-gradient(at 0% 0%, rgba(255, 107, 0, 0.15) 0, transparent 50%), 
+                radial-gradient(at 100% 100%, rgba(255, 107, 0, 0.1) 0, transparent 50%);
         }
 
-        .animate-fade-in {
-            animation: fadeIn 0.7s ease-out forwards;
+        .card-gradient {
+            background: linear-gradient(145deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .orange-glow {
+            box-shadow: 0 0 40px -10px rgba(255, 107, 0, 0.4);
         }
 
-        .hero-gradient {
-            background: radial-gradient(circle at 50% 50%, rgba(255, 107, 0, 0.1) 0%, transparent 70%);
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
         }
 
-        input[type="number"]::-webkit-inner-spin-button,
-        input[type="number"]::-webkit-outer-spin-button {
-            -webkit-appearance: none;
-            margin: 0;
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .tier-active {
+            background: var(--brand-orange) !important;
+            color: black !important;
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px -5px rgba(255, 107, 0, 0.3);
         }
     </style>
 </head>
-<body class="selection-orange">
+<body class="selection:bg-orange-500 selection:text-black">
 
-    <!-- Navbar -->
-    <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-white/5 glass">
-        <div class="flex items-center gap-3 cursor-pointer group" onclick="navigateTo('home')">
-            <div class="relative w-10 h-10 bg-[#3D2B1F] rounded-full flex items-center justify-center border-2 border-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.3)] transition-transform group-hover:rotate-12">
-                <i data-lucide="star" class="text-yellow-400 fill-yellow-400 w-6 h-6"></i>
+    <!-- Header -->
+    <nav class="fixed top-0 w-full z-50 glass px-6 py-5">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            <div class="flex items-center gap-4 cursor-pointer group" onclick="navigateTo('home')">
+                <div class="w-12 h-12 bg-orange-500 rounded-2xl flex items-center justify-center rotate-3 group-hover:rotate-12 transition-transform duration-500 shadow-lg shadow-orange-500/20">
+                    <i data-lucide="terminal" class="text-black w-6 h-6"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-extrabold tracking-tighter uppercase leading-none">Kristo<span class="text-orange-500">Shop</span></h1>
+                    <span class="text-[9px] text-gray-500 font-bold tracking-[0.3em] uppercase">Engineering Bureau • AB</span>
+                </div>
             </div>
-            <div>
-                <h1 class="text-lg font-black tracking-tighter text-orange-500 uppercase">KristoShop</h1>
-                <p class="text-[9px] text-gray-500 uppercase tracking-widest flex items-center gap-1">
-                    <i data-lucide="map-pin" class="w-2 h-2 text-red-500"></i> Airdrie • CA
-                </p>
+
+            <div class="hidden md:flex gap-12 items-center">
+                <button onclick="navigateTo('services')" class="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all">Development</button>
+                <button onclick="navigateTo('subs')" class="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all">Support Passes</button>
+                <button onclick="navigateTo('random')" class="text-[11px] font-bold uppercase tracking-widest text-gray-400 hover:text-white transition-all">The Stash</button>
             </div>
-        </div>
 
-        <div class="hidden md:flex gap-10">
-            <button onclick="navigateTo('services')" class="nav-link text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 hover:text-white transition-all">Bounties</button>
-            <button onclick="navigateTo('subs')" class="nav-link text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 hover:text-white transition-all">Passes</button>
-            <button onclick="navigateTo('random')" class="nav-link text-[10px] font-black tracking-[0.2em] uppercase text-gray-400 hover:text-white transition-all">Stash</button>
+            <button onclick="toggleCart(true)" class="relative group">
+                <div class="p-3 rounded-full border border-white/10 group-hover:border-orange-500/50 transition-colors">
+                    <i data-lucide="shopping-bag" class="w-5 h-5 text-gray-300 group-hover:text-orange-500"></i>
+                </div>
+                <span id="cart-count" class="absolute -top-1 -right-1 bg-orange-500 text-black text-[10px] font-black px-1.5 rounded-full hidden">0</span>
+            </button>
         </div>
-
-        <button onclick="toggleCart(true)" class="relative p-2 text-orange-500">
-            <i data-lucide="shopping-cart" class="w-6 h-6"></i>
-            <span id="cart-count" class="hidden absolute top-0 right-0 bg-orange-600 text-[10px] font-bold px-1.5 rounded-full ring-2 ring-black">0</span>
-        </button>
     </nav>
 
-    <!-- Main Container -->
-    <main id="main-content" class="pt-32 pb-20 px-6 max-w-7xl mx-auto min-h-[80vh]"></main>
+    <!-- Content Area -->
+    <main id="view-container" class="pt-32 pb-24 px-6 max-w-7xl mx-auto hero-mesh min-h-screen"></main>
 
-    <!-- Cart Drawer -->
-    <div id="cart-drawer" class="fixed inset-0 z-[100] hidden flex justify-end">
-        <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="toggleCart(false)"></div>
-        <div class="relative w-full max-w-md bg-[#080808] border-l border-orange-500/20 h-full p-8 flex flex-col">
-            <div class="flex justify-between items-center mb-10">
-                <h3 class="text-2xl font-black text-orange-500 flex items-center gap-2 uppercase tracking-tighter">
-                    <i data-lucide="package" class="w-6 h-6"></i> YOUR HAUL
-                </h3>
-                <button onclick="toggleCart(false)"><i data-lucide="x" class="w-6 h-6"></i></button>
+    <!-- Side Cart -->
+    <div id="cart-drawer" class="fixed inset-0 z-[100] hidden">
+        <div class="absolute inset-0 bg-black/80 backdrop-blur-sm" onclick="toggleCart(false)"></div>
+        <div class="absolute right-0 top-0 h-full w-full max-w-md bg-[#0a0a0a] border-l border-white/5 p-8 flex flex-col shadow-2xl">
+            <div class="flex justify-between items-center mb-12">
+                <h3 class="text-2xl font-heading font-bold uppercase italic">Selected Assets</h3>
+                <button onclick="toggleCart(false)" class="p-2 hover:bg-white/5 rounded-full"><i data-lucide="x"></i></button>
             </div>
-            <div id="cart-items" class="flex-grow overflow-y-auto space-y-4">
-                <!-- Items injected here -->
+            
+            <div id="cart-list" class="flex-grow space-y-6 overflow-y-auto pr-2">
+                <!-- Cart items -->
             </div>
-            <div class="pt-8 border-t border-white/10 mt-4">
-                <div class="flex justify-between items-center mb-6">
-                    <span class="text-gray-500 font-bold uppercase text-xs tracking-widest">Total</span>
-                    <span id="cart-total" class="text-3xl font-black text-orange-500">$0</span>
+
+            <div class="mt-8 pt-8 border-t border-white/5">
+                <div class="flex justify-between items-end mb-8">
+                    <span class="text-gray-500 text-xs font-bold uppercase tracking-widest">Investment Total</span>
+                    <span id="cart-total" class="text-4xl font-heading font-bold text-orange-500">$0</span>
                 </div>
-                <button onclick="handleStripeCheckout()" id="checkout-btn" class="w-full py-5 rounded-2xl bg-[#FF6B00] text-black font-black text-lg hover:bg-orange-400 transition-all uppercase tracking-widest">
-                    PROCEED TO STRIPE
+                <button onclick="checkout()" id="checkout-btn" class="w-full py-5 bg-orange-500 text-black font-black uppercase tracking-widest rounded-2xl hover:bg-orange-400 transition-all orange-glow">
+                    Initiate Secure Checkout
                 </button>
+                <p class="text-[9px] text-gray-600 text-center mt-4 uppercase font-bold tracking-widest">Secured via Stripe Encryption</p>
             </div>
         </div>
     </div>
 
-    <!-- Notification -->
-    <div id="notification" class="fixed bottom-10 right-10 z-[200] hidden bg-orange-600 text-white px-6 py-4 rounded-2xl shadow-2xl animate-fade-in">
-        <i data-lucide="check-circle-2" class="w-5 h-5 inline mr-2"></i> <span id="notif-text"></span>
+    <!-- Toast -->
+    <div id="toast" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-[200] hidden">
+        <div class="bg-white text-black px-6 py-3 rounded-full font-bold text-sm shadow-2xl flex items-center gap-3">
+            <i data-lucide="check-circle" class="w-4 h-4 text-orange-600"></i>
+            <span id="toast-text"></span>
+        </div>
     </div>
 
-    <footer class="border-t border-white/5 py-12 text-center text-gray-600 text-[10px] uppercase font-bold tracking-[0.3em]">
-        KristoShop • Airdrie • Alberta • CA
+    <footer class="border-t border-white/5 py-16 text-center">
+        <div class="mb-6 opacity-20 grayscale flex justify-center gap-8">
+            <i data-lucide="cpu"></i><i data-lucide="code-2"></i><i data-lucide="layers"></i>
+        </div>
+        <p class="text-[10px] font-bold text-gray-600 uppercase tracking-[0.5em]">KristoShop • Airdrie • Alberta • Canada</p>
     </footer>
 
     <script>
-        /**
-         * ENVIRONMENT CONFIGURATION (Vercel Integration)
-         */
-        const ENV = {
-            GEMINI_API_KEY: window.ENV?.VITE_GEMINI_API_KEY || "",
-            STRIPE_PUBLISHABLE_KEY: window.ENV?.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_sample",
-            STRIPE_SECRET_KEY: window.ENV?.VITE_STRIPE_SECRET_KEY || "" 
-        };
-
-        const stripe = Stripe(ENV.STRIPE_PUBLISHABLE_KEY);
-
-        // --- Data & State ---
-        const DATA = {
+        // -- DATA --
+        const SHOP_DATA = {
             SERVICES: [
-                { 
-                    id: 'game', 
-                    name: 'Game Engineering', 
-                    headline: 'High-Performance Logic Systems', 
-                    price: 50, 
-                    icon: 'gamepad-2', 
-                    desc: 'Bespoke logic engineering specializing in Lua for Stormworks and Roblox, or C# for Unity. Includes network optimization, custom physics controllers, and complex UI integration.', 
-                    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800',
+                {
+                    id: 'game-eng',
+                    name: 'Game System Engineering',
+                    headline: 'Advanced Logic & Physics Modules',
+                    basePrice: 75,
+                    desc: 'High-level script architecture for complex simulation environments. We specialize in Luau/Roblox, C#/Unity, and Stormworks Lua. From autonomous flight systems to persistent database integration, we build logic that scales.',
+                    icon: 'gamepad-2',
+                    image: 'https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=800',
                     tiers: [
-                        { label: 'Small Script', multiplier: 1 },
-                        { label: 'Modular System', multiplier: 2.5 },
-                        { label: 'Full Game Core', multiplier: 10 }
+                        { label: 'Standard Module', mult: 1, note: 'Single logic unit' },
+                        { label: 'Advanced System', mult: 3, note: 'Multi-module architecture' },
+                        { label: 'Full Game Core', mult: 10, note: 'End-to-end framework' }
                     ]
                 },
-                { 
-                    id: 'site', 
-                    name: 'Full Stack Web', 
-                    headline: 'Next-Gen Digital Experiences', 
-                    price: 30, 
-                    icon: 'globe', 
-                    desc: 'End-to-end development of modern web applications. We utilize React, Tailwind CSS, and headless backends to create blazing fast, SEO-optimized, and conversion-ready platforms.', 
-                    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800',
+                {
+                    id: 'web-app',
+                    name: 'Full-Stack Web Forge',
+                    headline: 'High-Performance Digital Platforms',
+                    basePrice: 50,
+                    desc: 'Modern web applications built with the T3 Stack or React/Next.js. Focused on extreme performance, SEO, and sleek user interfaces. We provide clean codebases ready for production scaling.',
+                    icon: 'layout',
+                    image: 'https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=800',
                     tiers: [
-                        { label: 'Landing Page', multiplier: 1 },
-                        { label: 'SaaS Platform', multiplier: 5 },
-                        { label: 'Enterprise App', multiplier: 15 }
+                        { label: 'Landing Page', mult: 1, note: 'High conversion focus' },
+                        { label: 'Web Platform', mult: 5, note: 'Complex dashboard/SaaS' },
+                        { label: 'Enterprise', mult: 15, note: 'Custom infrastructure' }
                     ]
                 }
             ],
             SUBS: [
-                { 
-                    id: 'maint', 
-                    name: 'Priority Retainer', 
-                    headline: 'Maintenance & Infinite Iteration', 
-                    price: 150, 
-                    icon: 'shield-check', 
-                    desc: 'Ongoing high-priority engineering support. This monthly subscription covers critical bug fixes, feature iterations, and security patching for your existing ecosystem.', 
-                    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800',
+                {
+                    id: 'dev-retainer',
+                    name: 'Engineering Retainer',
+                    headline: '24/7 Priority Technical Support',
+                    basePrice: 199,
                     isMonthly: true,
+                    desc: 'Secure a dedicated block of engineering time every month. This subscription ensures your systems stay updated, bugs are patched within hours, and new features are integrated seamlessly. Perfect for active game servers or live web platforms.',
+                    icon: 'shield-check',
+                    image: 'https://images.unsplash.com/photo-1551434678-e076c223a692?auto=format&fit=crop&q=80&w=800',
                     tiers: [
-                        { label: 'Casual (5h/mo)', multiplier: 1 },
-                        { label: 'Pro (15h/mo)', multiplier: 2.5 },
-                        { label: 'Dedicated (Unlimited)', multiplier: 8 }
+                        { label: 'Tier I', mult: 1, note: '5 hours priority' },
+                        { label: 'Tier II', mult: 2.5, note: '15 hours priority' },
+                        { label: 'Infinite', mult: 8, note: 'Uncapped engineering' }
                     ]
                 }
             ],
             STASH: [
-                { 
-                    id: 'rnd', 
-                    name: 'Mystery Script', 
-                    headline: 'Algorithmic Artifacts', 
-                    price: 10, 
-                    icon: 'dice-5', 
-                    desc: 'Access to a unique, battle-tested utility script from our internal library. Could be an advanced PID controller, an optimized data-sorting algorithm, or a custom UI framework component.', 
-                    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800' 
+                {
+                    id: 'utility-pack',
+                    name: 'The Utility Stash',
+                    headline: 'Pre-Built Logic Artifacts',
+                    basePrice: 15,
+                    desc: 'A curated collection of battle-tested utility scripts and UI components from our private library. Instant download, documented, and ready to drop into your project.',
+                    icon: 'archive',
+                    image: 'https://images.unsplash.com/photo-1558494949-ef010cbdcc51?auto=format&fit=crop&q=80&w=800'
                 }
             ]
         };
 
         let cart = [];
-        
-        // --- Core Functions ---
-        function navigateTo(view, data = null) {
-            const main = document.getElementById('main-content');
-            main.innerHTML = '';
-            main.classList.remove('animate-fade-in');
-            void main.offsetWidth; 
-            main.classList.add('animate-fade-in');
 
-            if (view === 'home') renderHome();
-            else if (view === 'services') renderGrid('The Bounty Board', DATA.SERVICES);
-            else if (view === 'subs') renderGrid('Monthly Subscriptions', DATA.SUBS);
-            else if (view === 'random') renderGrid('The Stash', DATA.STASH);
-            else if (view === 'detail') renderDetail(data);
+        // -- NAVIGATION --
+        function navigateTo(view, data = null) {
+            const container = document.getElementById('view-container');
+            container.style.opacity = '0';
             
-            lucide.createIcons();
-            window.scrollTo(0,0);
+            setTimeout(() => {
+                container.innerHTML = '';
+                if (view === 'home') renderHome();
+                else if (view === 'services') renderGrid('Engineering Bounties', SHOP_DATA.SERVICES);
+                else if (view === 'subs') renderGrid('Monthly Retainers', SHOP_DATA.SUBS);
+                else if (view === 'random') renderGrid('The Artifact Stash', SHOP_DATA.STASH);
+                else if (view === 'detail') renderDetail(data);
+                
+                lucide.createIcons();
+                container.style.opacity = '1';
+                window.scrollTo(0,0);
+            }, 200);
         }
 
         function renderHome() {
-            document.getElementById('main-content').innerHTML = `
-                <div class="space-y-48 pb-20">
-                    <!-- Hero -->
-                    <section class="py-20 text-center hero-gradient min-h-[70vh] flex flex-col justify-center">
-                        <h2 class="text-6xl md:text-[9rem] font-black mb-10 leading-[0.85] tracking-tighter uppercase">
-                            WE BUILD <br/> <span class="text-orange-500">ABOVE THE</span> <br/> STANDARD.
+            document.getElementById('view-container').innerHTML = `
+                <div class="space-y-40">
+                    <!-- Giant Hero -->
+                    <section class="min-h-[75vh] flex flex-col items-center justify-center text-center">
+                        <div class="inline-block px-4 py-1.5 rounded-full border border-orange-500/30 bg-orange-500/5 text-orange-500 text-[10px] font-black uppercase tracking-[0.4em] mb-8 animate-float">
+                            Boutique Engineering Studio
+                        </div>
+                        <h2 class="text-7xl md:text-[11rem] font-heading font-bold leading-[0.8] tracking-tighter uppercase mb-12">
+                            Logic <br/> <span class="text-orange-500 italic">Without</span> <br/> Limits.
                         </h2>
-                        <p class="text-gray-400 text-lg md:text-2xl mb-12 max-w-2xl mx-auto uppercase font-bold tracking-tight px-4">
-                            Premium logic and interface engineering from the heart of Alberta. Specializing in Lua, React, and Game Mechanics.
+                        <p class="max-w-2xl mx-auto text-gray-400 font-medium text-lg md:text-xl mb-16 leading-relaxed">
+                            We specialize in high-performance game logic, full-stack web architectures, and autonomous systems. Engineered in Airdrie, delivered globally.
                         </p>
-                        <div class="flex flex-col md:flex-row gap-6 justify-center px-4">
-                            <button onclick="navigateTo('services')" class="px-12 py-5 bg-orange-500 text-black font-black rounded-2xl text-lg hover:scale-105 transition-all uppercase shadow-[0_0_30px_rgba(255,107,0,0.3)]">
-                                VIEW THE BOUNTIES
+                        <div class="flex flex-wrap justify-center gap-6">
+                            <button onclick="navigateTo('services')" class="px-10 py-5 bg-orange-500 text-black font-black uppercase tracking-widest rounded-2xl orange-glow hover:scale-105 transition-all">
+                                Start a Project
                             </button>
-                            <button onclick="navigateTo('subs')" class="px-12 py-5 border border-white/20 text-white font-black rounded-2xl text-lg hover:bg-white hover:text-black transition-all uppercase">
-                                MONTHLY PASSES
+                            <button onclick="navigateTo('subs')" class="px-10 py-5 border border-white/10 hover:bg-white/5 font-black uppercase tracking-widest rounded-2xl transition-all">
+                                Monthly Passes
                             </button>
                         </div>
                     </section>
 
-                    <!-- Features -->
-                    <section class="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
-                        <div class="space-y-4 p-8 border border-white/5 rounded-[2rem] bg-white/5">
-                            <i data-lucide="zap" class="text-orange-500 w-10 h-10"></i>
-                            <h4 class="text-2xl font-black uppercase">Ultra-Fast Delivery</h4>
-                            <p class="text-gray-500 text-sm font-bold uppercase tracking-tight">Rapid prototyping and quick turnaround on all logic modules.</p>
-                        </div>
-                        <div class="space-y-4 p-8 border border-white/5 rounded-[2rem] bg-white/5">
-                            <i data-lucide="code" class="text-orange-500 w-10 h-10"></i>
-                            <h4 class="text-2xl font-black uppercase">Battle-Tested Code</h4>
-                            <p class="text-gray-500 text-sm font-bold uppercase tracking-tight">Engineered for stability. Thousands of hours logged in game-logic stability testing.</p>
-                        </div>
-                        <div class="space-y-4 p-8 border border-white/5 rounded-[2rem] bg-white/5">
-                            <i data-lucide="lock" class="text-orange-500 w-10 h-10"></i>
-                            <h4 class="text-2xl font-black uppercase">Privacy First</h4>
-                            <p class="text-gray-500 text-sm font-bold uppercase tracking-tight">White-label development. Your codebase stays your codebase.</p>
-                        </div>
-                    </section>
-
-                    <!-- Large Banner -->
-                    <section class="relative h-[600px] rounded-[4rem] overflow-hidden border border-white/10 group">
-                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1600" class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 transition-all duration-1000">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-                        <div class="absolute bottom-20 left-10 md:left-20 max-w-3xl">
-                             <h3 class="text-4xl md:text-7xl font-black mb-6 uppercase leading-none tracking-tighter">THE LUA EXPERTS <br/> OF THE NORTH.</h3>
-                             <p class="text-gray-400 font-bold uppercase tracking-widest text-sm mb-8">Specialized systems for Stormworks, Rust, and more.</p>
-                             <button onclick="navigateTo('random')" class="text-orange-500 font-black uppercase text-xs flex items-center gap-2 tracking-[0.4em] hover:translate-x-4 transition-transform">
-                                EXPLORE THE STASH <i data-lucide="arrow-right"></i>
-                             </button>
+                    <!-- Large Image Feature -->
+                    <section class="relative h-[600px] rounded-[3rem] overflow-hidden border border-white/10 group">
+                        <img src="https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&q=80&w=1600" class="w-full h-full object-cover grayscale opacity-50 group-hover:scale-105 transition-transform duration-[3s]">
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#030303] via-transparent to-transparent"></div>
+                        <div class="absolute bottom-16 left-16 max-w-xl">
+                            <h3 class="text-5xl font-heading font-bold uppercase mb-6">Complexity Simplified.</h3>
+                            <p class="text-gray-400 font-bold uppercase tracking-widest text-sm mb-8">From Stormworks PID controllers to Enterprise SaaS, we build the brains of your project.</p>
+                            <div class="flex gap-8">
+                                <div class="text-left">
+                                    <div class="text-2xl font-black text-orange-500">2000+</div>
+                                    <div class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Engineering Hours</div>
+                                </div>
+                                <div class="text-left">
+                                    <div class="text-2xl font-black text-orange-500">50+</div>
+                                    <div class="text-[9px] font-bold text-gray-500 uppercase tracking-widest">Successful Deployments</div>
+                                </div>
+                            </div>
                         </div>
                     </section>
 
-                    <!-- Trust Section -->
-                    <section class="text-center py-20 border-y border-white/5">
-                        <h4 class="text-xs font-black text-gray-600 uppercase tracking-[1em] mb-12 italic">Powered by Expertise</h4>
-                        <div class="flex flex-wrap justify-center gap-12 md:gap-32 opacity-30 grayscale invert">
-                            <span class="text-2xl font-black italic tracking-tighter uppercase">React</span>
-                            <span class="text-2xl font-black italic tracking-tighter uppercase">Lua</span>
-                            <span class="text-2xl font-black italic tracking-tighter uppercase">Stripe</span>
-                            <span class="text-2xl font-black italic tracking-tighter uppercase">Tailwind</span>
-                            <span class="text-2xl font-black italic tracking-tighter uppercase">Gemini AI</span>
+                    <!-- Detailed Capabilities -->
+                    <section class="grid grid-cols-1 md:grid-cols-2 gap-20 py-20">
+                        <div class="space-y-8">
+                            <h4 class="text-4xl font-heading font-bold uppercase">The Kristo <br/> Standard.</h4>
+                            <p class="text-gray-500 leading-relaxed font-medium">Every line of code is audited for performance and security. We don't just "make it work"—we make it efficient. Our expertise in low-level simulation logic gives us a unique edge in building performant systems where every millisecond counts.</p>
+                        </div>
+                        <div class="grid grid-cols-1 gap-8">
+                             <div class="p-8 border border-white/5 rounded-3xl card-gradient flex gap-6">
+                                <div class="text-orange-500"><i data-lucide="zap" class="w-10 h-10"></i></div>
+                                <div>
+                                    <h5 class="text-xl font-bold uppercase mb-2">High-Frequency Logic</h5>
+                                    <p class="text-sm text-gray-500">Optimized update loops for real-time simulation and game systems.</p>
+                                </div>
+                             </div>
+                             <div class="p-8 border border-white/5 rounded-3xl card-gradient flex gap-6">
+                                <div class="text-orange-500"><i data-lucide="shield" class="w-10 h-10"></i></div>
+                                <div>
+                                    <h5 class="text-xl font-bold uppercase mb-2">Bulletproof Security</h5>
+                                    <p class="text-sm text-gray-500">Sanitized inputs and secure server-side verification by default.</p>
+                                </div>
+                             </div>
                         </div>
                     </section>
-                </div>`;
+                </div>
+            `;
         }
 
         function renderGrid(title, items) {
-            let html = `<div class="mb-16 flex justify-between items-end"><div class="space-y-2"><h2 class="text-5xl font-black text-white uppercase tracking-tighter">${title}</h2><div class="w-20 h-1 bg-orange-500"></div></div><p class="text-[10px] text-gray-600 font-bold uppercase tracking-widest hidden md:block">Items: ${items.length}</p></div>`;
-            html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">`;
+            let html = `
+                <div class="mb-20">
+                    <h2 class="text-5xl font-heading font-bold uppercase tracking-tighter mb-4">${title}</h2>
+                    <div class="w-24 h-2 bg-orange-500 rounded-full"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            `;
+            
             items.forEach(item => {
                 html += `
-                <div onclick='navigateTo("detail", ${JSON.stringify(item)})' class="cursor-pointer group flex flex-col bg-[#080808] border border-white/5 rounded-[3rem] overflow-hidden hover:border-orange-500/30 transition-all">
-                    <div class="h-64 overflow-hidden relative">
-                        <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000">
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#080808] to-transparent"></div>
-                        <div class="absolute bottom-4 left-6 flex items-center gap-3">
-                            <div class="p-3 bg-orange-500 rounded-2xl text-black shadow-lg shadow-orange-500/20"><i data-lucide="${item.icon}" class="w-5 h-5"></i></div>
-                            <h3 class="text-2xl font-black text-white uppercase tracking-tighter">${item.name}</h3>
-                        </div>
-                    </div>
-                    <div class="p-8 flex-grow flex flex-col">
-                        <p class="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-6 italic opacity-60">"${item.headline}"</p>
-                        <div class="mt-auto flex justify-between items-center">
-                            <div class="flex flex-col">
-                                <span class="text-3xl font-black text-orange-500">$${item.price}</span>
-                                ${item.isMonthly ? '<span class="text-[10px] text-gray-500 font-bold uppercase">per month</span>' : ''}
+                    <div onclick='navigateTo("detail", ${JSON.stringify(item)})' class="group cursor-pointer border border-white/5 rounded-[2.5rem] overflow-hidden card-gradient hover:border-orange-500/40 transition-all duration-500">
+                        <div class="h-64 relative overflow-hidden">
+                            <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700">
+                            <div class="absolute inset-0 bg-gradient-to-t from-[#0a0a0a] to-transparent"></div>
+                            <div class="absolute bottom-6 left-6 p-4 bg-black/40 backdrop-blur-md rounded-2xl border border-white/10">
+                                <i data-lucide="${item.icon}" class="text-orange-500 w-6 h-6"></i>
                             </div>
-                            <span class="text-[10px] font-black uppercase text-gray-600 tracking-widest group-hover:text-white transition-colors">Configure Details →</span>
+                        </div>
+                        <div class="p-8">
+                            <h3 class="text-2xl font-bold uppercase mb-2">${item.name}</h3>
+                            <p class="text-xs text-gray-500 font-bold uppercase tracking-widest mb-6 italic opacity-60">"${item.headline}"</p>
+                            <div class="flex justify-between items-end">
+                                <div>
+                                    <span class="text-gray-500 text-[10px] font-bold uppercase block mb-1">Starting At</span>
+                                    <span class="text-3xl font-heading font-bold text-orange-500">$${item.basePrice}${item.isMonthly ? '<span class="text-sm text-gray-600">/mo</span>' : ''}</span>
+                                </div>
+                                <div class="text-white/20 group-hover:text-orange-500 transition-colors">
+                                    <i data-lucide="arrow-right"></i>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                </div>`;
+                `;
             });
             html += `</div>`;
-            document.getElementById('main-content').innerHTML = html;
+            document.getElementById('view-container').innerHTML = html;
         }
 
         function renderDetail(item) {
-            let selectedPrice = item.price;
-            let currentTier = item.tiers ? item.tiers[0] : null;
-
-            window.updateTierPrice = (index) => {
-                currentTier = item.tiers[index];
-                selectedPrice = item.price * currentTier.multiplier;
-                document.getElementById('display-price').innerText = `$${selectedPrice}`;
-                document.querySelectorAll('.tier-btn').forEach(b => b.classList.replace('bg-orange-500', 'bg-white/5'));
-                document.getElementById(`tier-${index}`).classList.replace('bg-white/5', 'bg-orange-500');
-                document.getElementById(`tier-${index}`).classList.replace('text-white', 'text-black');
+            let selectedTierIdx = 0;
+            const tiers = item.tiers || [{ label: 'Standard', mult: 1, note: 'Basic delivery' }];
+            
+            window.selectTier = (idx) => {
+                selectedTierIdx = idx;
+                const price = Math.floor(item.basePrice * tiers[idx].mult);
+                document.getElementById('detail-price').innerText = `$${price}`;
+                document.querySelectorAll('.tier-opt').forEach((el, i) => {
+                    el.classList.toggle('tier-active', i === idx);
+                });
             };
 
-            let tiersHtml = '';
-            if (item.tiers) {
-                tiersHtml = `
-                <div class="mb-10">
-                    <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest block mb-4">Select Scale</span>
-                    <div class="grid grid-cols-3 gap-2">
-                        ${item.tiers.map((t, idx) => `
-                            <button id="tier-${idx}" onclick="updateTierPrice(${idx})" class="tier-btn py-3 rounded-xl transition-all font-black uppercase text-[10px] ${idx === 0 ? 'bg-orange-500 text-black' : 'bg-white/5 text-white'}">
-                                ${t.label}
-                            </button>
-                        `).join('')}
-                    </div>
-                </div>`;
-            }
-
-            document.getElementById('main-content').innerHTML = `
-                <button onclick="navigateTo('home')" class="flex items-center gap-2 text-gray-500 hover:text-orange-500 font-black uppercase text-xs tracking-widest mb-10 group">
-                    <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> Return to Main
-                </button>
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                    <div class="relative rounded-[3rem] overflow-hidden border border-white/10 h-[600px] shadow-2xl">
-                        <img src="${item.image}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
-                        <div class="absolute bottom-10 left-10">
-                             <h2 class="text-5xl font-black text-white uppercase tracking-tighter">${item.name}</h2>
+            document.getElementById('view-container').innerHTML = `
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+                    <div class="sticky top-32 space-y-8">
+                        <div class="h-[500px] rounded-[3rem] overflow-hidden border border-white/10 shadow-2xl">
+                            <img src="${item.image}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="p-8 bg-white/5 rounded-3xl border border-white/5 italic text-gray-400 text-sm leading-relaxed">
+                            <i data-lucide="quote" class="w-4 h-4 text-orange-500 mb-4"></i>
+                            "${item.desc}"
                         </div>
                     </div>
-                    <div class="flex flex-col">
-                        <p class="text-gray-400 mb-10 leading-relaxed text-lg font-medium">${item.desc}</p>
-                        
-                        ${tiersHtml}
-
-                        <div class="mb-10 p-6 bg-white/5 rounded-3xl border border-white/10" id="ai-box">
-                             <button onclick="getAiAdvice('${item.name}')" class="text-[10px] font-black uppercase text-orange-500 flex items-center gap-2 hover:text-white transition-colors">
-                                <i data-lucide="wand-2" class="w-4 h-4"></i> Get Engineering Consult
-                             </button>
+                    
+                    <div class="space-y-12">
+                        <div>
+                            <h2 class="text-5xl font-heading font-bold uppercase mb-4 leading-none">${item.name}</h2>
+                            <p class="text-orange-500 font-bold uppercase tracking-[0.3em] text-xs">${item.headline}</p>
                         </div>
-                        <div class="mt-auto p-10 bg-white/5 rounded-[2.5rem] border border-white/10 flex flex-col md:flex-row justify-between items-center gap-8">
-                            <div>
-                                <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Configuration Price</span>
-                                <div id="display-price" class="text-5xl font-black text-white mt-1">$${selectedPrice}</div>
-                                ${item.isMonthly ? '<span class="text-[10px] text-orange-500/50 font-black uppercase tracking-widest">Billed Monthly</span>' : ''}
+
+                        <div class="space-y-6">
+                            <h4 class="text-xs font-bold text-gray-500 uppercase tracking-widest">Select Project Scale</h4>
+                            <div class="space-y-3">
+                                ${tiers.map((t, i) => `
+                                    <div onclick="selectTier(${i})" class="tier-opt group flex justify-between items-center p-6 bg-white/5 border border-white/5 rounded-2xl cursor-pointer hover:border-orange-500/20 transition-all ${i===0 ? 'tier-active' : ''}">
+                                        <div>
+                                            <div class="font-bold uppercase text-sm">${t.label}</div>
+                                            <div class="text-[10px] opacity-60 uppercase font-bold tracking-widest">${t.note}</div>
+                                        </div>
+                                        <div class="font-heading font-bold text-xl">$${Math.floor(item.basePrice * t.mult)}</div>
+                                    </div>
+                                `).join('')}
                             </div>
-                            <button onclick='addToCart(${JSON.stringify(item)}, true)' class="w-full md:w-auto px-12 py-5 bg-orange-500 text-black font-black rounded-2xl hover:scale-105 transition-all text-sm uppercase shadow-lg shadow-orange-500/20">
-                                Add to Haul
+                        </div>
+
+                        <div class="p-10 bg-orange-500/5 rounded-[2.5rem] border border-orange-500/20 flex flex-col sm:flex-row justify-between items-center gap-8">
+                            <div>
+                                <div class="text-gray-500 text-[10px] font-bold uppercase tracking-widest mb-1">Total Investment</div>
+                                <div id="detail-price" class="text-6xl font-heading font-bold text-white">$${item.basePrice}</div>
+                                ${item.isMonthly ? '<div class="text-orange-500 text-[10px] font-black uppercase mt-2 tracking-widest">Billed Monthly</div>' : ''}
+                            </div>
+                            <button onclick='buyItem(${JSON.stringify(item)}, ${selectedTierIdx})' class="w-full sm:w-auto px-12 py-6 bg-orange-500 text-black font-black uppercase tracking-widest rounded-2xl orange-glow hover:scale-105 transition-all">
+                                Add to Bag
                             </button>
                         </div>
                     </div>
-                </div>`;
+                </div>
+            `;
             lucide.createIcons();
         }
 
-        // --- Cart Logic ---
+        // -- CART & CHECKOUT --
         function toggleCart(show) {
-            const drawer = document.getElementById('cart-drawer');
-            drawer.classList.toggle('hidden', !show);
+            document.getElementById('cart-drawer').classList.toggle('hidden', !show);
             if(show) updateCartUI();
         }
 
-        function addToCart(item, useSelected = false) {
-            let price = item.price;
-            let label = item.name;
+        function buyItem(item, tierIdx) {
+            const tiers = item.tiers || [{ label: 'Standard', mult: 1 }];
+            const price = Math.floor(item.basePrice * tiers[tierIdx].mult);
             
-            if (useSelected) {
-                // Fetch updated price from UI if detail view is active
-                const displayPriceEl = document.getElementById('display-price');
-                if (displayPriceEl) {
-                    price = parseFloat(displayPriceEl.innerText.replace('$', ''));
-                }
-            }
-
-            const cartItem = { 
-                ...item, 
-                price: price,
-                cartId: Math.random().toString(36).substr(2, 9) 
-            };
+            cart.push({
+                ...item,
+                finalPrice: price,
+                tierLabel: tiers[tierIdx].label,
+                uid: Math.random().toString(36).substr(2, 9)
+            });
             
-            cart.push(cartItem);
-            showNotification(`Added ${item.name} ($${price}) to haul`);
             updateCartUI();
-        }
-
-        function removeFromCart(cartId) {
-            cart = cart.filter(i => i.cartId !== cartId);
-            updateCartUI();
+            showToast(`Added ${item.name} to haul`);
         }
 
         function updateCartUI() {
-            const itemsContainer = document.getElementById('cart-items');
+            const list = document.getElementById('cart-list');
             const totalEl = document.getElementById('cart-total');
             const countEl = document.getElementById('cart-count');
             
-            itemsContainer.innerHTML = cart.length ? '' : '<div class="text-center py-20 text-gray-600 text-xs font-bold uppercase tracking-widest">Your haul is empty.</div>';
-            
+            list.innerHTML = '';
             let total = 0;
+            
             cart.forEach(item => {
-                total += item.price;
-                itemsContainer.innerHTML += `
-                    <div class="p-4 rounded-2xl border border-white/5 bg-white/5 flex gap-4 items-center animate-fade-in group hover:border-orange-500/20 transition-all">
-                        <div class="w-12 h-12 rounded-xl overflow-hidden grayscale group-hover:grayscale-0 transition-all">
-                            <img src="${item.image}" class="w-full h-full object-cover">
+                total += item.finalPrice;
+                list.innerHTML += `
+                    <div class="p-5 rounded-2xl bg-white/5 border border-white/5 flex gap-4 items-center">
+                        <div class="w-12 h-12 rounded-xl bg-orange-500/10 flex items-center justify-center text-orange-500">
+                            <i data-lucide="${item.icon}" class="w-5 h-5"></i>
                         </div>
                         <div class="flex-grow">
-                            <div class="font-bold text-sm text-white">${item.name}</div>
-                            <div class="text-orange-500 font-black text-xs uppercase tracking-widest">$${item.price} ${item.isMonthly ? '/mo' : ''}</div>
+                            <div class="text-xs font-bold uppercase text-white">${item.name}</div>
+                            <div class="text-[9px] text-gray-500 font-bold uppercase tracking-widest">${item.tierLabel} scale</div>
                         </div>
-                        <button onclick="removeFromCart('${item.cartId}')" class="text-gray-500 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
-                    </div>`;
+                        <div class="text-right">
+                            <div class="font-bold text-orange-500">$${item.finalPrice}</div>
+                            <button onclick="removeItem('${item.uid}')" class="text-[9px] text-gray-700 hover:text-red-500 font-black uppercase">Remove</button>
+                        </div>
+                    </div>
+                `;
             });
 
             totalEl.innerText = `$${total}`;
@@ -438,73 +444,33 @@
             lucide.createIcons();
         }
 
-        // --- AI Consult Logic ---
-        async function getAiAdvice(productName) {
-            const box = document.getElementById('ai-box');
-            box.innerHTML = '<div class="flex items-center gap-2 text-orange-500 text-[10px] font-black uppercase"><i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Contacting Engineering AI...</div>';
-            lucide.createIcons();
-
-            if (!ENV.GEMINI_API_KEY) {
-                box.innerHTML = '<div class="text-[10px] text-red-500 font-black uppercase">Gemini AI Key Missing</div>';
-                return;
-            }
-
-            try {
-                const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${ENV.GEMINI_API_KEY}`, {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: `Professional technical consult for buying: ${productName}. Focus on value and scalability. Max 2 concise sentences. No emojis.` }] }]
-                    })
-                });
-                const data = await response.json();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Consultation unavailable.";
-                box.innerHTML = `<div class="text-xs text-gray-400"><span class="text-orange-500 font-black block mb-2 uppercase text-[10px] tracking-widest">Engineer Review</span>${text}</div>`;
-            } catch (err) {
-                box.innerHTML = '<div class="text-[10px] text-red-500 font-black uppercase">AI Module Offline</div>';
-            }
+        function removeItem(uid) {
+            cart = cart.filter(i => i.uid !== uid);
+            updateCartUI();
         }
 
-        // --- Stripe Integration ---
-        async function handleStripeCheckout() {
-            if (cart.length === 0) return;
+        function showToast(text) {
+            const t = document.getElementById('toast');
+            document.getElementById('toast-text').innerText = text;
+            t.classList.remove('hidden');
+            setTimeout(() => t.classList.add('hidden'), 3000);
+        }
+
+        function checkout() {
+            if(!cart.length) return;
             
             const btn = document.getElementById('checkout-btn');
-            const originalText = btn.innerText;
-            btn.innerText = "OPENING SECURE PORTAL...";
+            btn.innerText = "Securing Connection...";
             btn.disabled = true;
 
-            const total = cart.reduce((acc, i) => acc + i.price, 0);
-
-            try {
-                // Logic: In a real Vercel app, you would fetch a session from /api/create-checkout
-                // For this preview, we use the Stripe SDK's fallback mechanism
-                const { error } = await stripe.redirectToCheckout({
-                    lineItems: cart.map(item => ({
-                        price: item.price > 100 ? 'price_premium' : 'price_standard', 
-                        quantity: 1,
-                    })),
-                    mode: 'payment',
-                    successUrl: window.location.origin + '?success=true',
-                    cancelUrl: window.location.origin,
-                });
-
-                if (error) throw error;
-            } catch (err) {
-                // Demo Redirection
-                showNotification("Opening Stripe Checkout...");
-                window.location.href = `https://buy.stripe.com/test_demo?amount=${total * 100}`;
-            } finally {
-                btn.innerText = originalText;
-                btn.disabled = false;
-            }
-        }
-
-        function showNotification(text) {
-            const notif = document.getElementById('notification');
-            document.getElementById('notif-text').innerText = text;
-            notif.classList.remove('hidden');
-            setTimeout(() => notif.classList.add('hidden'), 3000);
+            // Updated to use your specific Stripe Payment Link
+            const STRIPE_LINK = "https://buy.stripe.com/test_dRmeVdaljctWgKedKlak000";
+            
+            setTimeout(() => {
+                showToast("Redirecting to Secure Payment Portal...");
+                // Direct redirect to your provided Payment Link
+                window.location.href = STRIPE_LINK;
+            }, 1000);
         }
 
         // Init
