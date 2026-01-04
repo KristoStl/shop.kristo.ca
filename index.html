@@ -42,6 +42,10 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
+        .hero-gradient {
+            background: radial-gradient(circle at 50% 50%, rgba(255, 107, 0, 0.1) 0%, transparent 70%);
+        }
+
         input[type="number"]::-webkit-inner-spin-button,
         input[type="number"]::-webkit-outer-spin-button {
             -webkit-appearance: none;
@@ -117,29 +121,74 @@
     <script>
         /**
          * ENVIRONMENT CONFIGURATION (Vercel Integration)
-         * Note: SECRET_KEY is mentioned here but for security, client-side code 
-         * only utilizes the PUBLISHABLE_KEY.
          */
         const ENV = {
             GEMINI_API_KEY: window.ENV?.VITE_GEMINI_API_KEY || "",
             STRIPE_PUBLISHABLE_KEY: window.ENV?.VITE_STRIPE_PUBLISHABLE_KEY || "pk_test_sample",
-            STRIPE_SECRET_KEY: window.ENV?.VITE_STRIPE_SECRET_KEY || "" // Stored for internal logic ref
+            STRIPE_SECRET_KEY: window.ENV?.VITE_STRIPE_SECRET_KEY || "" 
         };
 
-        // Initialize Stripe
         const stripe = Stripe(ENV.STRIPE_PUBLISHABLE_KEY);
 
         // --- Data & State ---
         const DATA = {
             SERVICES: [
-                { id: 'game', name: 'Game Development', headline: 'High-Octane Logic', price: 50, icon: 'gamepad-2', desc: 'Lua and C# engineering for Stormworks, Roblox, and Unity.', image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800' },
-                { id: 'site', name: 'Web Development', headline: 'Liquid Glass Web', price: 30, icon: 'globe', desc: 'Fast, responsive React and Tailwind builds for modern business.', image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800' }
+                { 
+                    id: 'game', 
+                    name: 'Game Engineering', 
+                    headline: 'High-Performance Logic Systems', 
+                    price: 50, 
+                    icon: 'gamepad-2', 
+                    desc: 'Bespoke logic engineering specializing in Lua for Stormworks and Roblox, or C# for Unity. Includes network optimization, custom physics controllers, and complex UI integration.', 
+                    image: 'https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800',
+                    tiers: [
+                        { label: 'Small Script', multiplier: 1 },
+                        { label: 'Modular System', multiplier: 2.5 },
+                        { label: 'Full Game Core', multiplier: 10 }
+                    ]
+                },
+                { 
+                    id: 'site', 
+                    name: 'Full Stack Web', 
+                    headline: 'Next-Gen Digital Experiences', 
+                    price: 30, 
+                    icon: 'globe', 
+                    desc: 'End-to-end development of modern web applications. We utilize React, Tailwind CSS, and headless backends to create blazing fast, SEO-optimized, and conversion-ready platforms.', 
+                    image: 'https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800',
+                    tiers: [
+                        { label: 'Landing Page', multiplier: 1 },
+                        { label: 'SaaS Platform', multiplier: 5 },
+                        { label: 'Enterprise App', multiplier: 15 }
+                    ]
+                }
             ],
             SUBS: [
-                { id: 'maint', name: 'Priority Support', headline: 'Zero Downtime', price: 100, icon: 'shield-check', desc: 'Ongoing maintenance and priority patching for existing systems.', image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800' }
+                { 
+                    id: 'maint', 
+                    name: 'Priority Retainer', 
+                    headline: 'Maintenance & Infinite Iteration', 
+                    price: 150, 
+                    icon: 'shield-check', 
+                    desc: 'Ongoing high-priority engineering support. This monthly subscription covers critical bug fixes, feature iterations, and security patching for your existing ecosystem.', 
+                    image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800',
+                    isMonthly: true,
+                    tiers: [
+                        { label: 'Casual (5h/mo)', multiplier: 1 },
+                        { label: 'Pro (15h/mo)', multiplier: 2.5 },
+                        { label: 'Dedicated (Unlimited)', multiplier: 8 }
+                    ]
+                }
             ],
             STASH: [
-                { id: 'rnd', name: 'Mystery Script', headline: 'Luck of the Draw', price: 10, icon: 'dice-5', desc: 'Random high-quality utility script from our private archive.', image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800' }
+                { 
+                    id: 'rnd', 
+                    name: 'Mystery Script', 
+                    headline: 'Algorithmic Artifacts', 
+                    price: 10, 
+                    icon: 'dice-5', 
+                    desc: 'Access to a unique, battle-tested utility script from our internal library. Could be an advanced PID controller, an optimized data-sorting algorithm, or a custom UI framework component.', 
+                    image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800' 
+                }
             ]
         };
 
@@ -155,7 +204,7 @@
 
             if (view === 'home') renderHome();
             else if (view === 'services') renderGrid('The Bounty Board', DATA.SERVICES);
-            else if (view === 'subs') renderGrid('Subscription Passes', DATA.SUBS);
+            else if (view === 'subs') renderGrid('Monthly Subscriptions', DATA.SUBS);
             else if (view === 'random') renderGrid('The Stash', DATA.STASH);
             else if (view === 'detail') renderDetail(data);
             
@@ -165,40 +214,93 @@
 
         function renderHome() {
             document.getElementById('main-content').innerHTML = `
-                <div class="space-y-32">
-                    <section class="py-20 text-center">
-                        <h2 class="text-6xl md:text-[8rem] font-black mb-10 leading-[0.8] tracking-tighter uppercase">
-                            THE <br/> <span class="text-orange-500">FAR WEST</span> <br/> OF CODE.
+                <div class="space-y-48 pb-20">
+                    <!-- Hero -->
+                    <section class="py-20 text-center hero-gradient min-h-[70vh] flex flex-col justify-center">
+                        <h2 class="text-6xl md:text-[9rem] font-black mb-10 leading-[0.85] tracking-tighter uppercase">
+                            WE BUILD <br/> <span class="text-orange-500">ABOVE THE</span> <br/> STANDARD.
                         </h2>
-                        <p class="text-gray-400 text-lg md:text-2xl mb-12 max-w-2xl mx-auto uppercase font-bold tracking-tight">
-                            Boutique engineering in Airdrie. Specialized in Lua, Game Logic, and React.
+                        <p class="text-gray-400 text-lg md:text-2xl mb-12 max-w-2xl mx-auto uppercase font-bold tracking-tight px-4">
+                            Premium logic and interface engineering from the heart of Alberta. Specializing in Lua, React, and Game Mechanics.
                         </p>
-                        <button onclick="navigateTo('services')" class="px-12 py-5 bg-orange-500 text-black font-black rounded-2xl text-lg hover:scale-105 transition-all uppercase">
-                            EXPLORE BOUNTIES <i data-lucide="chevron-right" class="inline ml-2"></i>
-                        </button>
+                        <div class="flex flex-col md:flex-row gap-6 justify-center px-4">
+                            <button onclick="navigateTo('services')" class="px-12 py-5 bg-orange-500 text-black font-black rounded-2xl text-lg hover:scale-105 transition-all uppercase shadow-[0_0_30px_rgba(255,107,0,0.3)]">
+                                VIEW THE BOUNTIES
+                            </button>
+                            <button onclick="navigateTo('subs')" class="px-12 py-5 border border-white/20 text-white font-black rounded-2xl text-lg hover:bg-white hover:text-black transition-all uppercase">
+                                MONTHLY PASSES
+                            </button>
+                        </div>
+                    </section>
+
+                    <!-- Features -->
+                    <section class="grid grid-cols-1 md:grid-cols-3 gap-12 text-left">
+                        <div class="space-y-4 p-8 border border-white/5 rounded-[2rem] bg-white/5">
+                            <i data-lucide="zap" class="text-orange-500 w-10 h-10"></i>
+                            <h4 class="text-2xl font-black uppercase">Ultra-Fast Delivery</h4>
+                            <p class="text-gray-500 text-sm font-bold uppercase tracking-tight">Rapid prototyping and quick turnaround on all logic modules.</p>
+                        </div>
+                        <div class="space-y-4 p-8 border border-white/5 rounded-[2rem] bg-white/5">
+                            <i data-lucide="code" class="text-orange-500 w-10 h-10"></i>
+                            <h4 class="text-2xl font-black uppercase">Battle-Tested Code</h4>
+                            <p class="text-gray-500 text-sm font-bold uppercase tracking-tight">Engineered for stability. Thousands of hours logged in game-logic stability testing.</p>
+                        </div>
+                        <div class="space-y-4 p-8 border border-white/5 rounded-[2rem] bg-white/5">
+                            <i data-lucide="lock" class="text-orange-500 w-10 h-10"></i>
+                            <h4 class="text-2xl font-black uppercase">Privacy First</h4>
+                            <p class="text-gray-500 text-sm font-bold uppercase tracking-tight">White-label development. Your codebase stays your codebase.</p>
+                        </div>
+                    </section>
+
+                    <!-- Large Banner -->
+                    <section class="relative h-[600px] rounded-[4rem] overflow-hidden border border-white/10 group">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?auto=format&fit=crop&q=80&w=1600" class="w-full h-full object-cover grayscale opacity-40 group-hover:grayscale-0 transition-all duration-1000">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                        <div class="absolute bottom-20 left-10 md:left-20 max-w-3xl">
+                             <h3 class="text-4xl md:text-7xl font-black mb-6 uppercase leading-none tracking-tighter">THE LUA EXPERTS <br/> OF THE NORTH.</h3>
+                             <p class="text-gray-400 font-bold uppercase tracking-widest text-sm mb-8">Specialized systems for Stormworks, Rust, and more.</p>
+                             <button onclick="navigateTo('random')" class="text-orange-500 font-black uppercase text-xs flex items-center gap-2 tracking-[0.4em] hover:translate-x-4 transition-transform">
+                                EXPLORE THE STASH <i data-lucide="arrow-right"></i>
+                             </button>
+                        </div>
+                    </section>
+
+                    <!-- Trust Section -->
+                    <section class="text-center py-20 border-y border-white/5">
+                        <h4 class="text-xs font-black text-gray-600 uppercase tracking-[1em] mb-12 italic">Powered by Expertise</h4>
+                        <div class="flex flex-wrap justify-center gap-12 md:gap-32 opacity-30 grayscale invert">
+                            <span class="text-2xl font-black italic tracking-tighter uppercase">React</span>
+                            <span class="text-2xl font-black italic tracking-tighter uppercase">Lua</span>
+                            <span class="text-2xl font-black italic tracking-tighter uppercase">Stripe</span>
+                            <span class="text-2xl font-black italic tracking-tighter uppercase">Tailwind</span>
+                            <span class="text-2xl font-black italic tracking-tighter uppercase">Gemini AI</span>
+                        </div>
                     </section>
                 </div>`;
         }
 
         function renderGrid(title, items) {
-            let html = `<div class="mb-16"><h2 class="text-5xl font-black text-white mb-4 uppercase tracking-tighter">${title}</h2><div class="w-20 h-1 bg-orange-500"></div></div>`;
+            let html = `<div class="mb-16 flex justify-between items-end"><div class="space-y-2"><h2 class="text-5xl font-black text-white uppercase tracking-tighter">${title}</h2><div class="w-20 h-1 bg-orange-500"></div></div><p class="text-[10px] text-gray-600 font-bold uppercase tracking-widest hidden md:block">Items: ${items.length}</p></div>`;
             html += `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">`;
             items.forEach(item => {
                 html += `
                 <div onclick='navigateTo("detail", ${JSON.stringify(item)})' class="cursor-pointer group flex flex-col bg-[#080808] border border-white/5 rounded-[3rem] overflow-hidden hover:border-orange-500/30 transition-all">
-                    <div class="h-56 overflow-hidden relative">
+                    <div class="h-64 overflow-hidden relative">
                         <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000">
                         <div class="absolute inset-0 bg-gradient-to-t from-[#080808] to-transparent"></div>
                         <div class="absolute bottom-4 left-6 flex items-center gap-3">
-                            <div class="p-3 bg-orange-500 rounded-2xl text-black"><i data-lucide="${item.icon}" class="w-5 h-5"></i></div>
-                            <h3 class="text-2xl font-black text-white uppercase">${item.name}</h3>
+                            <div class="p-3 bg-orange-500 rounded-2xl text-black shadow-lg shadow-orange-500/20"><i data-lucide="${item.icon}" class="w-5 h-5"></i></div>
+                            <h3 class="text-2xl font-black text-white uppercase tracking-tighter">${item.name}</h3>
                         </div>
                     </div>
                     <div class="p-8 flex-grow flex flex-col">
-                        <p class="text-gray-500 text-xs italic mb-8">"${item.headline}"</p>
+                        <p class="text-gray-500 text-[10px] font-black uppercase tracking-widest mb-6 italic opacity-60">"${item.headline}"</p>
                         <div class="mt-auto flex justify-between items-center">
-                            <span class="text-3xl font-black text-orange-500">$${item.price}</span>
-                            <span class="text-[10px] font-black uppercase text-gray-600 tracking-widest group-hover:text-white transition-colors">Configure →</span>
+                            <div class="flex flex-col">
+                                <span class="text-3xl font-black text-orange-500">$${item.price}</span>
+                                ${item.isMonthly ? '<span class="text-[10px] text-gray-500 font-bold uppercase">per month</span>' : ''}
+                            </div>
+                            <span class="text-[10px] font-black uppercase text-gray-600 tracking-widest group-hover:text-white transition-colors">Configure Details →</span>
                         </div>
                     </div>
                 </div>`;
@@ -208,36 +310,68 @@
         }
 
         function renderDetail(item) {
+            let selectedPrice = item.price;
+            let currentTier = item.tiers ? item.tiers[0] : null;
+
+            window.updateTierPrice = (index) => {
+                currentTier = item.tiers[index];
+                selectedPrice = item.price * currentTier.multiplier;
+                document.getElementById('display-price').innerText = `$${selectedPrice}`;
+                document.querySelectorAll('.tier-btn').forEach(b => b.classList.replace('bg-orange-500', 'bg-white/5'));
+                document.getElementById(`tier-${index}`).classList.replace('bg-white/5', 'bg-orange-500');
+                document.getElementById(`tier-${index}`).classList.replace('text-white', 'text-black');
+            };
+
+            let tiersHtml = '';
+            if (item.tiers) {
+                tiersHtml = `
+                <div class="mb-10">
+                    <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest block mb-4">Select Scale</span>
+                    <div class="grid grid-cols-3 gap-2">
+                        ${item.tiers.map((t, idx) => `
+                            <button id="tier-${idx}" onclick="updateTierPrice(${idx})" class="tier-btn py-3 rounded-xl transition-all font-black uppercase text-[10px] ${idx === 0 ? 'bg-orange-500 text-black' : 'bg-white/5 text-white'}">
+                                ${t.label}
+                            </button>
+                        `).join('')}
+                    </div>
+                </div>`;
+            }
+
             document.getElementById('main-content').innerHTML = `
-                <button onclick="navigateTo('home')" class="flex items-center gap-2 text-gray-500 hover:text-orange-500 font-black uppercase text-xs tracking-widest mb-10">
-                    <i data-lucide="arrow-left" class="w-4 h-4"></i> Return
+                <button onclick="navigateTo('home')" class="flex items-center gap-2 text-gray-500 hover:text-orange-500 font-black uppercase text-xs tracking-widest mb-10 group">
+                    <i data-lucide="arrow-left" class="w-4 h-4 group-hover:-translate-x-1 transition-transform"></i> Return to Main
                 </button>
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
-                    <div class="relative rounded-[3rem] overflow-hidden border border-white/10 h-[500px]">
+                    <div class="relative rounded-[3rem] overflow-hidden border border-white/10 h-[600px] shadow-2xl">
                         <img src="${item.image}" class="w-full h-full object-cover">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent"></div>
                         <div class="absolute bottom-10 left-10">
-                             <h2 class="text-5xl font-black text-white uppercase">${item.name}</h2>
+                             <h2 class="text-5xl font-black text-white uppercase tracking-tighter">${item.name}</h2>
                         </div>
                     </div>
                     <div class="flex flex-col">
-                        <p class="text-gray-400 mb-10 leading-relaxed">${item.desc}</p>
+                        <p class="text-gray-400 mb-10 leading-relaxed text-lg font-medium">${item.desc}</p>
+                        
+                        ${tiersHtml}
+
                         <div class="mb-10 p-6 bg-white/5 rounded-3xl border border-white/10" id="ai-box">
-                             <button onclick="getAiAdvice('${item.name}')" class="text-[10px] font-black uppercase text-orange-500 flex items-center gap-2">
-                                <i data-lucide="wand-2" class="w-4 h-4"></i> Get Technical Consult
+                             <button onclick="getAiAdvice('${item.name}')" class="text-[10px] font-black uppercase text-orange-500 flex items-center gap-2 hover:text-white transition-colors">
+                                <i data-lucide="wand-2" class="w-4 h-4"></i> Get Engineering Consult
                              </button>
                         </div>
-                        <div class="mt-auto p-10 bg-white/5 rounded-[2.5rem] border border-white/10 flex justify-between items-center">
+                        <div class="mt-auto p-10 bg-white/5 rounded-[2.5rem] border border-white/10 flex flex-col md:flex-row justify-between items-center gap-8">
                             <div>
-                                <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Base Bounty</span>
-                                <div class="text-5xl font-black text-white mt-1">$${item.price}</div>
+                                <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Configuration Price</span>
+                                <div id="display-price" class="text-5xl font-black text-white mt-1">$${selectedPrice}</div>
+                                ${item.isMonthly ? '<span class="text-[10px] text-orange-500/50 font-black uppercase tracking-widest">Billed Monthly</span>' : ''}
                             </div>
-                            <button onclick='addToCart(${JSON.stringify(item)})' class="px-12 py-5 bg-orange-500 text-black font-black rounded-2xl hover:scale-105 transition-all text-sm uppercase">
+                            <button onclick='addToCart(${JSON.stringify(item)}, true)' class="w-full md:w-auto px-12 py-5 bg-orange-500 text-black font-black rounded-2xl hover:scale-105 transition-all text-sm uppercase shadow-lg shadow-orange-500/20">
                                 Add to Haul
                             </button>
                         </div>
                     </div>
                 </div>`;
+            lucide.createIcons();
         }
 
         // --- Cart Logic ---
@@ -247,10 +381,26 @@
             if(show) updateCartUI();
         }
 
-        function addToCart(item) {
-            const cartItem = { ...item, cartId: Math.random().toString(36).substr(2, 9) };
+        function addToCart(item, useSelected = false) {
+            let price = item.price;
+            let label = item.name;
+            
+            if (useSelected) {
+                // Fetch updated price from UI if detail view is active
+                const displayPriceEl = document.getElementById('display-price');
+                if (displayPriceEl) {
+                    price = parseFloat(displayPriceEl.innerText.replace('$', ''));
+                }
+            }
+
+            const cartItem = { 
+                ...item, 
+                price: price,
+                cartId: Math.random().toString(36).substr(2, 9) 
+            };
+            
             cart.push(cartItem);
-            showNotification(`Added ${item.name} to haul`);
+            showNotification(`Added ${item.name} ($${price}) to haul`);
             updateCartUI();
         }
 
@@ -264,16 +414,19 @@
             const totalEl = document.getElementById('cart-total');
             const countEl = document.getElementById('cart-count');
             
-            itemsContainer.innerHTML = cart.length ? '' : '<div class="text-center py-20 text-gray-600 text-xs font-bold uppercase tracking-widest">Empty</div>';
+            itemsContainer.innerHTML = cart.length ? '' : '<div class="text-center py-20 text-gray-600 text-xs font-bold uppercase tracking-widest">Your haul is empty.</div>';
             
             let total = 0;
             cart.forEach(item => {
                 total += item.price;
                 itemsContainer.innerHTML += `
-                    <div class="p-4 rounded-2xl border border-white/5 bg-white/5 flex gap-4 items-center animate-fade-in">
+                    <div class="p-4 rounded-2xl border border-white/5 bg-white/5 flex gap-4 items-center animate-fade-in group hover:border-orange-500/20 transition-all">
+                        <div class="w-12 h-12 rounded-xl overflow-hidden grayscale group-hover:grayscale-0 transition-all">
+                            <img src="${item.image}" class="w-full h-full object-cover">
+                        </div>
                         <div class="flex-grow">
                             <div class="font-bold text-sm text-white">${item.name}</div>
-                            <div class="text-orange-500 font-mono text-xs">$${item.price}</div>
+                            <div class="text-orange-500 font-black text-xs uppercase tracking-widest">$${item.price} ${item.isMonthly ? '/mo' : ''}</div>
                         </div>
                         <button onclick="removeFromCart('${item.cartId}')" class="text-gray-500 hover:text-white"><i data-lucide="x" class="w-4 h-4"></i></button>
                     </div>`;
@@ -288,11 +441,11 @@
         // --- AI Consult Logic ---
         async function getAiAdvice(productName) {
             const box = document.getElementById('ai-box');
-            box.innerHTML = '<div class="flex items-center gap-2 text-orange-500 text-[10px] font-black uppercase"><i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Contacting Technician...</div>';
+            box.innerHTML = '<div class="flex items-center gap-2 text-orange-500 text-[10px] font-black uppercase"><i data-lucide="loader-2" class="w-3 h-3 animate-spin"></i> Contacting Engineering AI...</div>';
             lucide.createIcons();
 
             if (!ENV.GEMINI_API_KEY) {
-                box.innerHTML = '<div class="text-[10px] text-red-500 font-black uppercase">AI Key Missing</div>';
+                box.innerHTML = '<div class="text-[10px] text-red-500 font-black uppercase">Gemini AI Key Missing</div>';
                 return;
             }
 
@@ -301,14 +454,14 @@
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
-                        contents: [{ parts: [{ text: `Briefly consult on purchasing: ${productName}. Max 2 sentences. No emojis.` }] }]
+                        contents: [{ parts: [{ text: `Professional technical consult for buying: ${productName}. Focus on value and scalability. Max 2 concise sentences. No emojis.` }] }]
                     })
                 });
                 const data = await response.json();
-                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "No advice found.";
-                box.innerHTML = `<div class="text-xs text-gray-400"><span class="text-orange-500 font-black block mb-2 uppercase text-[10px]">AI ADVICE</span>${text}</div>`;
+                const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "Consultation unavailable.";
+                box.innerHTML = `<div class="text-xs text-gray-400"><span class="text-orange-500 font-black block mb-2 uppercase text-[10px] tracking-widest">Engineer Review</span>${text}</div>`;
             } catch (err) {
-                box.innerHTML = '<div class="text-[10px] text-red-500 font-black uppercase">Technician Offline</div>';
+                box.innerHTML = '<div class="text-[10px] text-red-500 font-black uppercase">AI Module Offline</div>';
             }
         }
 
@@ -323,37 +476,23 @@
 
             const total = cart.reduce((acc, i) => acc + i.price, 0);
 
-            /**
-             * For a fully functional Stripe integration with Vercel:
-             * 1. You would call a Vercel Serverless Function (/api/checkout).
-             * 2. That function uses the STRIPE_SECRET_KEY to create a session.
-             * 3. It returns a session ID.
-             * * For this client-only preview, we use the Stripe Checkout redirect pattern.
-             */
-            
             try {
-                // If using Stripe Payment Links (Easiest for HTML only):
-                // window.location.href = `https://buy.stripe.com/your_link_id?client_reference_id=${Date.now()}`;
-                
-                // If using Stripe Checkout Redirect (SDK method):
+                // Logic: In a real Vercel app, you would fetch a session from /api/create-checkout
+                // For this preview, we use the Stripe SDK's fallback mechanism
                 const { error } = await stripe.redirectToCheckout({
                     lineItems: cart.map(item => ({
-                        // In production, these IDs come from your Stripe Dashboard Products
-                        price: 'price_H5ggY9q12345', 
+                        price: item.price > 100 ? 'price_premium' : 'price_standard', 
                         quantity: 1,
                     })),
                     mode: 'payment',
-                    successUrl: window.location.origin + '?session_id={CHECKOUT_SESSION_ID}',
+                    successUrl: window.location.origin + '?success=true',
                     cancelUrl: window.location.origin,
                 });
 
-                if (error) {
-                    // Fallback to demo link if sample price IDs fail
-                    showNotification("Redirecting to Test Portal...");
-                    window.location.href = `https://buy.stripe.com/test_demo?amount=${total * 100}`;
-                }
+                if (error) throw error;
             } catch (err) {
-                // Fallback for demo environments
+                // Demo Redirection
+                showNotification("Opening Stripe Checkout...");
                 window.location.href = `https://buy.stripe.com/test_demo?amount=${total * 100}`;
             } finally {
                 btn.innerText = originalText;
