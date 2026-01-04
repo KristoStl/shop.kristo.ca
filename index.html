@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KristoShop - Airdrie • CA</title>
+<meta name="description" content="KristoShop: Boutique engineering in Airdrie. Specialized in Lua, Game Logic, and High-Performance React. Services, subscriptions, and scripts available.">
+<meta property="og:title" content="KristoShop - Airdrie • CA">
+<meta property="og:description" content="Boutique engineering in Airdrie. Specialized in Lua, Game Logic, and High-Performance React.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?auto=format&fit=crop&q=80&w=800">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="KristoShop - Airdrie • CA">
+<meta name="twitter:description" content="Boutique engineering in Airdrie. Specialized in Lua, Game Logic, and High-Performance React.">
+<meta name="twitter:image" content="https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?auto=format&fit=crop&q=80&w=800">
+<link rel="icon" href="https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?auto=format&fit=crop&q=80&w=32" type="image/png">
+<link href="https://cdn.jsdelivr.net/npm/tailwindcss@3.3.2/dist/tailwind.min.css" rel="stylesheet">
+<script src="https://js.stripe.com/v3/"></script>
+<style>
+  /* Additional custom styling for UI */
+  body { background-color: #050505; color: white; font-family: sans-serif; }
+  .fade { transition: all 0.3s ease-in-out; }
+  .hidden { display: none; }
+</style>
+</head>
+<body class="overflow-x-hidden">
+
+<!-- NAVIGATION -->
+<nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-orange-500/10 backdrop-blur-3xl bg-black/60">
+  <div class="flex items-center gap-3 cursor-pointer group" id="nav-home">
+    <div class="relative w-10 h-10 bg-[#3D2B1F] rounded-full flex items-center justify-center border-2 border-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.3)] transition-transform group-hover:rotate-12">
+      <svg class="w-6 h-6 text-yellow-400 fill-yellow-400"><use href="#star-icon"></use></svg>
+    </div>
+    <div>
+      <h1 class="text-lg font-black tracking-tighter text-orange-500 uppercase">KristoShop</h1>
+      <p class="text-[9px] text-gray-500 uppercase tracking-widest flex items-center gap-1">
+        <span class="w-2 h-2 bg-red-500 rounded-full inline-block"></span> Airdrie • CA
+      </p>
+    </div>
+  </div>
+  <div class="hidden md:flex gap-10">
+    <button class="nav-btn" data-page="home">Station</button>
+    <button class="nav-btn" data-page="services">Bounties</button>
+    <button class="nav-btn" data-page="subs">Passes</button>
+    <button class="nav-btn" data-page="random">Stash</button>
+  </div>
+  <button id="cart-btn" class="relative p-2 text-orange-500">
+    <svg class="w-6 h-6"><use href="#cart-icon"></use></svg>
+    <span id="cart-count" class="absolute top-0 right-0 bg-orange-600 text-[10px] font-bold px-1.5 rounded-full ring-2 ring-black hidden">0</span>
+  </button>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main class="pt-24 pb-20 px-6 max-w-7xl mx-auto min-h-[80vh]" id="main-content">
+  <!-- Home Page -->
+  <section id="page-home">
+    <div class="space-y-32">
+      <section class="py-20 text-center">
+        <h2 class="text-6xl md:text-[8rem] font-black mb-10 leading-[0.8] tracking-tighter">
+          THE <br/> <span class="text-orange-500">FAR WEST</span> <br/> OF CODE.
+        </h2>
+        <p class="text-gray-400 text-lg md:text-2xl mb-12 max-w-2xl mx-auto uppercase font-bold tracking-tight">
+          Boutique engineering in Airdrie. Specialized in Lua, Game Logic, and High-Performance React.
+        </p>
+        <button id="explore-services" class="px-12 py-5 bg-orange-500 text-black font-black rounded-2xl text-lg hover:scale-105 transition-all">
+          EXPLORE BOUNTIES →
+        </button>
+      </section>
+      <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="bg-white/5 border border-white/10 p-10 rounded-[2.5rem]">
+          <div class="text-4xl font-black mb-2">2500+</div>
+          <div class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Engineering Hours</div>
+        </div>
+        <div class="bg-white/5 border border-white/10 p-10 rounded-[2.5rem]">
+          <div class="text-4xl font-black mb-2">Rank #1</div>
+          <div class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Stormworks Logic</div>
+        </div>
+        <div class="bg-white/5 border border-white/10 p-10 rounded-[2.5rem]">
+          <div class="text-4xl font-black mb-2">100%</div>
+          <div class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">Local Support</div>
+        </div>
+      </section>
+    </div>
+  </section>
+
+  <!-- Other pages (services, subs, random, detail) will be dynamically loaded -->
+  <section id="page-services" class="hidden"></section>
+  <section id="page-subs" class="hidden"></section>
+  <section id="page-random" class="hidden"></section>
+  <section id="page-detail" class="hidden"></section>
+</main>
+
+<!-- CART -->
+<div id="cart-panel" class="fixed inset-0 z-[100] flex justify-end hidden">
+  <div class="absolute inset-0 bg-black/90 backdrop-blur-md"></div>
+  <div class="relative w-full max-w-md bg-[#080808] border-l border-orange-500/20 h-full p-8 flex flex-col">
+    <div class="flex justify-between items-center mb-10">
+      <h3 class="text-2xl font-black text-orange-500 flex items-center gap-2 uppercase tracking-tighter">
+        <svg class="w-6 h-6"><use href="#package-icon"></use></svg> YOUR HAUL
+      </h3>
+      <button id="cart-close"><svg class="w-6 h-6"><use href="#x-icon"></use></svg></button>
+    </div>
+    <div id="cart-items" class="flex-grow overflow-y-auto space-y-4"></div>
+    <div class="pt-8 border-t border-white/10 mt-4">
+      <div class="flex justify-between items-center mb-6">
+        <span class="text-gray-500 font-bold uppercase text-xs tracking-widest">Total</span>
+        <span id="cart-total" class="text-3xl font-black text-orange-500">$0</span>
+      </div>
+      <button id="checkout-btn" class="w-full py-5 rounded-2xl bg-[#FF6B00] text-black font-black text-lg hover:bg-orange-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all" disabled>
+        PROCEED TO STRIPE
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ICON SPRITE -->
+<svg style="display:none">
+  <symbol id="star-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M12 17.27L18.18 21 16.54 13.97 22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z"/></symbol>
+  <symbol id="cart-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M7 18c-1.1 0-1.99.9-1.99 2S5.9 22 7 22s2-.9 2-2-.9-2-2-2zm10 0c-1.1 0-1.99.9-1.99 2S15.9 22 17 22s2-.9 2-2-.9-2-2-2zM7.16 14l.84-4h8l1.18 4H7.16zM7 6h12v2H7z"/></symbol>
+  <symbol id="package-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M21 16V8a1 1 0 0 0-.5-.87L13 2.09a1 1 0 0 0-1 0l-7.5 5.04A1 1 0 0 0 4 8v8a1 1 0 0 0 .5.87l7.5 5.04a1 1 0 0 0 1 0l7.5-5.04A1 1 0 0 0 21 16z"/></symbol>
+  <symbol id="x-icon" viewBox="0 0 24 24"><path fill="currentColor" d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/></symbol>
+</svg>
+
+<script>
+  // ------------------------------
+  // DATA (services, subscriptions, random)
+  // ------------------------------
+  const DATA = {
+    services: [
+      {
+        id: 'game',
+        type: 'service',
+        name: 'Game Development',
+        headline: 'High-Octane Logic for Modern Gaming',
+        fullDesc: 'We build admin tools, physics-defying logic, and standalone prototypes. Over 2000 hours in Stormworks engineering.',
+        basePrice: 50,
+        customFields: [
+          { id: 'engine', label: 'Engine', type: 'select', options: ['Unity C#','Stormworks Lua','Roblox Luau','Custom C++'] },
+          { id: 'features', label: 'Core Systems', type: 'list', options: ['Netcode','Physics','AI','UI/UX','Database'] },
+          { id: 'complexity', label: 'Complexity (1-10)', type: 'number', min: 1, max: 10, default: 5 }
+        ]
+      },
+      {
+        id: 'web',
+        type: 'service',
+        name: 'Web Development',
+        headline: 'Liquid Glass Web Engineering',
+        fullDesc: 'We create blazing-fast React/Next.js/Tailwind websites with Auth, CMS, SEO, and Analytics.',
+        basePrice: 30,
+        customFields: [
+          { id: 'stack', label: 'Stack', type: 'select', options: ['React/Tailwind','Next.js Fullstack','Static Site'] },
+          { id: 'pages', label: 'Pages', type: 'number', min:1,max:50,default:1 }
+        ]
+      }
+    ],
+    subscriptions: [
+      {
+        id: 'sub_maint',
+        type: 'subscription',
+        name: 'Priority Support',
+        headline: 'Zero Downtime Architecture',
+        fullDesc: 'Ongoing maintenance, security patches, and priority bug fixing. Billed monthly.',
+        basePrice: 100,
+        customFields: [
+          { id: 'tier', label: 'Response Tier', type: 'select', options: ['Basic 48h','Pro 12h','Elite 1h'] },
+          { id: 'systems', label: 'Server Count', type:'number',min:1,max:5,default:1 }
+        ]
+      }
+    ],
+    random: [
+      {
+        id: 'rnd_code',
+        type: 'product',
+        name: 'Mystery Script',
+        headline: 'Algorithmic Luck of the Draw',
+        fullDesc: 'Receive a random utility script from our archive. Could be shader, pathfinder, or UI kit.',
+        basePrice: 10,
+        customFields: [
+          { id: 'category', label: 'Pool Category', type:'select', options:['Logic','Visuals','Tools','Universal'] }
+        ]
+      }
+    ]
+  };
+
+  // ------------------------------
+  // CART LOGIC
+  // ------------------------------
+  let cart = [];
+
+  const updateCartUI = () => {
+    const cartPanel = document.getElementById('cart-panel');
+    const cartItems = document.getElementById('cart-items');
+    const cartCount = document.getElementById('cart-count');
+    const cartTotal = document.getElementById('cart-total');
+    cartItems.innerHTML = '';
+    let total = 0;
+    cart.forEach(item=>{
+      total += item.price;
+      const div = document.createElement('div');
+      div.className='p-4 rounded-2xl border border-white/5 bg-white/5 flex gap-4 items-center';
+      div.innerHTML=`<div class="flex-grow"><div class="font-bold text-sm">${item.name}</div><div class="text-orange-500 font-mono text-xs">$${item.price}</div></div><button class="remove-item" data-id="${item.id}">X</button>`;
+      cartItems.appendChild(div);
+    });
+    document.querySelectorAll('.remove-item').forEach(btn=>btn.onclick=()=>{cart=cart.filter(c=>c.id!==btn.dataset.id);updateCartUI();});
+    cartCount.innerText=cart.length; cartCount.classList.toggle('hidden',cart.length===0);
+    cartTotal.innerText='$'+total;
+    document.getElementById('checkout-btn').disabled=cart.length===0;
+  };
+
+  const addToCart = (item) => { cart.push(item); updateCartUI(); };
+
+  document.getElementById('cart-btn').onclick=()=>document.getElementById('cart-panel').classList.remove('hidden');
+  document.getElementById('cart-close').onclick=()=>document.getElementById('cart-panel').classList.add('hidden');
+
+  document.getElementById('checkout-btn').onclick=async()=>{
+    const stripe = Stripe(process.env.STRIPE_PUBLISHABLE_KEY);
+    const res = await fetch('/api/checkout.js',{
+      method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({items:cart})
+    });
+    const data = await res.json();
+    stripe.redirectToCheckout({sessionId:data.id});
+  };
+
+  // ------------------------------
+  // PAGE NAVIGATION
+  // ------------------------------
+  const pages = ['home','services','subs','random','detail'];
+  const showPage = (page)=>{
+    pages.forEach(p=>document.getElementById('page-'+p).classList.add('hidden'));
+    document.getElementById('page-'+page).classList.remove('hidden');
+  };
+  document.querySelectorAll('.nav-btn').forEach(btn=>btn.onclick=()=>showPage(btn.dataset.page));
+  document.getElementById('nav-home').onclick=()=>showPage('home');
+  document.getElementById('explore-services').onclick=()=>showPage('services');
+
+  // ------------------------------
+  // LOAD SERVICES/SUBS/RANDOM dynamically
+  // ------------------------------
+  const loadGrid = (page,data)=>{
+    const container=document.getElementById('page-'+page);
+    container.innerHTML='';
+    const grid=document.createElement('div'); grid.className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10';
+    data.forEach(item=>{
+      const card=document.createElement('div'); card.className='cursor-pointer group flex flex-col bg-[#080808] border border-white/5 rounded-[3rem] overflow-hidden';
+      card.onclick=()=>showDetail(item);
+      card.innerHTML=`<div class="h-56 overflow-hidden relative"><img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000"/><div class="absolute inset-0 bg-gradient-to-t from-[#080808] to-transparent"></div><div class="absolute bottom-4 left-6 flex items-center gap-3"><div class="p-3 bg-orange-500 rounded-2xl text-black inline-block">${item.name[0]}</div><h3 class="text-2xl font-black text-white uppercase">${item.name}</h3></div></div><div class="p-8 flex-grow flex flex-col"><p class="text-gray-500 text-xs italic mb-8">"${item.headline}"</p><div class="mt-auto flex justify-between items-center"><span class="text-3xl font-black text-orange-500">$${item.basePrice}</span><span class="text-[10px] font-black uppercase text-gray-600 tracking-widest group-hover:text-white transition-colors">Configure →</span></div></div>`;
+      grid.appendChild(card);
+    });
+    container.appendChild(grid);
+  };
+
+  const showDetail=(item)=>{
+    showPage('detail');
+    const container=document.getElementById('page-detail');
+    container.innerHTML='';
+    const div=document.createElement('div');
+    div.className='max-w-4xl mx-auto py-20 space-y-8';
+    let customHtml='';
+    if(item.customFields){
+      item.customFields.forEach(f=>{
+        if(f.type==='select'){
+          customHtml+=`<label class="block text-gray-400 font-bold text-xs mb-2 uppercase tracking-widest">${f.label}</label><select id="custom-${f.id}" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 mb-6">${f.options.map(o=>`<option value="${o}">${o}</option>`).join('')}</select>`;
+        } else if(f.type==='number'){
+          customHtml+=`<label class="block text-gray-400 font-bold text-xs mb-2 uppercase tracking-widest">${f.label}</label><input type="number" min="${f.min}" max="${f.max}" value="${f.default||f.min}" id="custom-${f.id}" class="w-full p-4 rounded-2xl bg-white/5 border border-white/10 mb-6">`;
+        }
+      });
+    }
+    div.innerHTML=`<h2 class="text-5xl font-black text-orange-500">${item.name}</h2><p class="text-gray-400">${item.fullDesc}</p><div>${customHtml}</div><button id="add-cart" class="mt-8 py-5 w-full bg-orange-500 text-black font-black rounded-2xl text-lg hover:scale-105 transition-all">Add to Cart ($${item.basePrice})</button>`;
+    container.appendChild(div);
+    document.getElementById('add-cart').onclick=()=>{
+      let price=item.basePrice;
+      const customData={};
+      if(item.customFields){
+        item.customFields.forEach(f=>{
+          const val=document.getElementById('custom-'+f.id).value;
+          customData[f.id]=val;
+          // optional: modify price based on field (example)
+          if(f.type==='number') price+=parseInt(val);
+        });
+      }
+      addToCart({...item,price,customData,id:item.id+'-'+Date.now()});
+    };
+  };
+
+  loadGrid('services',DATA.services);
+  loadGrid('subs',DATA.subscriptions);
+  loadGrid('random',DATA.random);
+
+</script>
+
+</body>
+</html>
