@@ -1,0 +1,66 @@
+{
+  "SERVICES": {
+    "GAME_MAKING": {
+      "id": "game",
+      "type": "service",
+      "name": "Game Development",
+      "headline": "High-Octane Logic for Modern Gaming",
+      "fullDesc": "Based in Airdrie, we provide world-class game systems specializing in Lua and C#. With over 2000 hours in Stormworks engineering, we build admin tools, physics-defying logic, and complete standalone prototypes.",
+      "image": "https://images.unsplash.com/photo-1542751371-adc38448a05e?auto=format&fit=crop&q=80&w=800",
+      "iconName": "Gamepad2",
+      "basePrice": 50,
+      "customFields": [
+        { "id": "engine", "label": "Engine Architecture", "type": "select", "options": ["Unity C#", "Stormworks Lua", "Roblox Luau", "Custom C++"] },
+        { "id": "features", "label": "Core Systems", "type": "list", "options": ["Netcode", "Physics", "AI", "UI/UX", "Database"] },
+        { "id": "projName", "label": "Project Name", "type": "text", "placeholder": "Operation: Thunder" },
+        { "id": "complexity", "label": "Complexity Index", "type": "number", "min": 1, "max": 10, "default": 5 }
+      ]
+    },
+    "SITE_MAKING": {
+      "id": "site",
+      "type": "service",
+      "name": "Web Development",
+      "headline": "Liquid Glass Web Engineering",
+      "fullDesc": "We don't just make websites; we forge digital experiences. Utilizing React, Next.js, and Tailwind CSS, we build blazing-fast portfolios and stores. Locally owned and operated in Alberta.",
+      "image": "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&q=80&w=800",
+      "iconName": "Globe",
+      "basePrice": 30,
+      "customFields": [
+        { "id": "stack", "label": "Development Stack", "type": "select", "options": ["React/Tailwind", "Next.js Fullstack", "Static Site"] },
+        { "id": "pages", "label": "Page Quantity", "type": "number", "min": 1, "max": 50, "default": 1 },
+        { "id": "addons", "label": "Web Features", "type": "list", "options": ["Auth", "Stripe", "CMS", "SEO", "Analytics"] }
+      ]
+    }
+  },
+  "SUBSCRIPTIONS": {
+    "MAINTENANCE": {
+      "id": "sub_maint",
+      "type": "subscription",
+      "name": "Priority Support",
+      "headline": "Zero Downtime Architecture",
+      "fullDesc": "Ongoing maintenance, security patches, and priority bug fixing for your existing systems. Billed monthly.",
+      "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800",
+      "iconName": "ShieldCheck",
+      "basePrice": 100,
+      "customFields": [
+        { "id": "tier", "label": "Response Tier", "type": "select", "options": ["Basic 48h", "Pro 12h", "Elite 1h"] },
+        { "id": "systems", "label": "Server Count", "type": "number", "min": 1, "max": 5, "default": 1 }
+      ]
+    }
+  },
+  "RANDOM": {
+    "MYSTERY_CODE": {
+      "id": "rnd_code",
+      "type": "product",
+      "name": "Mystery Script",
+      "headline": "Algorithmic Luck of the Draw",
+      "fullDesc": "Receive a random, high-quality utility script from our private archive. Could be a shader, a pathfinder, or a UI kit.",
+      "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800",
+      "iconName": "Dice5",
+      "basePrice": 10,
+      "customFields": [
+        { "id": "category", "label": "Pool Category", "type": "select", "options": ["Logic", "Visuals", "Tools", "Universal"] }
+      ]
+    }
+  }
+}
