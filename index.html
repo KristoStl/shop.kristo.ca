@@ -18,7 +18,8 @@
 <meta name="stripe-publishable-key" content="%STRIPE_PUBLISHABLE_KEY%">
 <meta name="stripe-secret-key" content="%STRIPE_SECRET_KEY%">
 </head>
-<body class="bg-[#050505] text-white font-sans">
+<body class="bg-[#050505] text-white font-sans overflow-x-hidden">
+
 <div id="app"></div>
 
 <script type="module">
@@ -30,22 +31,55 @@ let cart = [];
 let currentPage = 'home';
 let selectedProduct = null;
 let showCart = false;
+let statusMessage = null;
 
 // Helper for icons
-function getIcon(name){ return lucide.createIcon(name, { class: 'w-5 h-5' }).outerHTML; }
+function getIcon(name, size=5){
+  return lucide.createIcon(name, { class: `w-${size} h-${size}` }).outerHTML;
+}
 
 // Load JSON
-fetch('data.json').then(r=>r.json()).then(json=>{ DATA=json; renderApp(); }).catch(e=>console.error(e));
+fetch('data.json')
+  .then(r=>r.json())
+  .then(json=>{ DATA=json; renderApp(); })
+  .catch(e=>console.error(e));
 
-function navigateTo(page, product=null){ currentPage=page; selectedProduct=product; renderApp(); window.scrollTo(0,0);}
-function addToCart(item){ item.cartId=Math.random().toString(36).substr(2,9); cart.push(item); renderApp();}
-function removeFromCart(id){ cart=cart.filter(i=>i.cartId!==id); renderApp();}
-function totalPrice(){ return cart.reduce((acc,i)=>acc+(i.price||0),0);}
+function navigateTo(page, product=null){
+  currentPage=page; 
+  selectedProduct=product; 
+  renderApp(); 
+  window.scrollTo(0,0);
+}
+
+function addToCart(item){
+  item.cartId=Math.random().toString(36).substr(2,9); 
+  cart.push(item); 
+  showStatus(`Added ${item.name} to haul`);
+  renderApp();
+}
+
+function removeFromCart(id){
+  cart=cart.filter(i=>i.cartId!==id); 
+  renderApp();
+}
+
+function totalPrice(){
+  return cart.reduce((acc,i)=>acc+(i.price||0),0);
+}
+
 function handleCheckout(){ 
   if(!STRIPE_PUBLISHABLE_KEY){ alert("Stripe key missing!"); return;}
   const stripe = Stripe(STRIPE_PUBLISHABLE_KEY);
   alert("Stripe checkout would happen now. Total: $"+totalPrice());
 }
+
+function showStatus(msg){
+  statusMessage = msg;
+  renderApp();
+  setTimeout(()=>{statusMessage=null; renderApp();}, 3000);
+}
+
+// ------------------ RENDER FUNCTIONS ------------------
 
 function renderApp(){
   if(!DATA) return;
@@ -53,12 +87,12 @@ function renderApp(){
   <nav class="fixed top-0 w-full z-50 px-6 py-4 flex justify-between items-center border-b border-orange-500/10 backdrop-blur-3xl bg-black/60">
     <div class="flex items-center gap-3 cursor-pointer group" onclick="navigateTo('home')">
       <div class="relative w-10 h-10 bg-[#3D2B1F] rounded-full flex items-center justify-center border-2 border-yellow-400 shadow-[0_0_15px_rgba(251,191,36,0.3)] transition-transform group-hover:rotate-12">
-        ${getIcon('Star')}
+        ${getIcon('Star',6)}
       </div>
       <div>
         <h1 class="text-lg font-black tracking-tighter text-orange-500 uppercase">KristoShop</h1>
         <p class="text-[9px] text-gray-500 uppercase tracking-widest flex items-center gap-1">
-          ${getIcon('MapPin')} Airdrie • CA
+          ${getIcon('MapPin',2)} Airdrie • CA
         </p>
       </div>
     </div>
@@ -66,7 +100,7 @@ function renderApp(){
       ${['home','services','subs','random'].map(p=>`<button onclick="navigateTo('${p}')" class="text-[10px] font-black tracking-[0.2em] uppercase transition-all ${currentPage===p?'text-orange-500':'text-gray-400 hover:text-white'}">${p==='home'?'Station':p==='services'?'Bounties':p==='subs'?'Passes':'Stash'}</button>`).join('')}
     </div>
     <button onclick="showCart=true; renderApp()" class="relative p-2 text-orange-500">
-      ${getIcon('ShoppingCart')}
+      ${getIcon('ShoppingCart',6)}
       ${cart.length>0?`<span class="absolute top-0 right-0 bg-orange-600 text-[10px] font-bold px-1.5 rounded-full ring-2 ring-black">${cart.length}</span>`:''}
     </button>
   </nav>
@@ -78,11 +112,177 @@ function renderApp(){
     ${currentPage==='detail' && selectedProduct?renderDetail(selectedProduct):''}
   </main>
   ${showCart?renderCart():''}
+  ${statusMessage?`<div class="fixed bottom-10 right-10 z-[200] bg-orange-600 text-white px-6 py-4 rounded-2xl shadow-2xl animate-in slide-in-from-right-10">${getIcon('CheckCircle2',5)} ${statusMessage}</div>`:''}
+  <footer class="border-t border-white/5 py-12 text-center text-gray-600 text-[10px] uppercase font-bold tracking-[0.3em]">
+    KristoShop • Airdrie • Alberta • CA
+  </footer>
   `;
 }
 
-// You can reuse the renderHome, renderGrid, renderDetail, renderCart functions from the previous HTML I gave you
-// (They are identical UI-wise, no modifications)
+// ------------------ HOME ------------------
+
+function renderHome(){
+  return `
+  <div class="space-y-32">
+    <section class="py-20 text-center animate-in fade-in duration-700">
+      <h2 class="text-6xl md:text-[8rem] font-black mb-10 leading-[0.8] tracking-tighter">
+        THE <br/> <span class="text-orange-500">FAR WEST</span> <br/> OF CODE.
+      </h2>
+      <p class="text-gray-400 text-lg md:text-2xl mb-12 max-w-2xl mx-auto uppercase font-bold tracking-tight">
+        Boutique engineering in Airdrie. Specialized in Lua, Game Logic, and High-Performance React.
+      </p>
+      <button onclick="navigateTo('services')" class="px-12 py-5 bg-orange-500 text-black font-black rounded-2xl text-lg hover:scale-105 transition-all">
+        EXPLORE BOUNTIES ${getIcon('ChevronRight',4)}
+      </button>
+    </section>
+    <section class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      ${[
+        { label: 'Engineering Hours', value: '2500+', icon: 'Activity' },
+        { label: 'Stormworks Logic', value: 'Rank #1', icon: 'Anchor' },
+        { label: 'Local Support', value: '100%', icon: 'MapPin' },
+      ].map(stat=>`
+      <div class="bg-white/5 border border-white/10 p-10 rounded-[2.5rem] group hover:border-orange-500/50 transition-colors">
+        ${getIcon(stat.icon,8)}
+        <div class="text-4xl font-black mb-2">${stat.value}</div>
+        <div class="text-[10px] font-black uppercase tracking-[0.2em] text-gray-500">${stat.label}</div>
+      </div>
+      `).join('')}
+    </section>
+    <section class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <div class="space-y-8">
+        <h3 class="text-5xl font-black uppercase tracking-tighter">OUR <span class="text-orange-500">CREED.</span></h3>
+        <p class="text-gray-400 leading-relaxed text-lg">
+          Based in the heart of Alberta, KristoShop is a specialized laboratory for technical challenges. From real-time Lua integration to liquid-smooth React interfaces.
+        </p>
+        <div class="space-y-4">
+          ${['Zero Boilerplate Policy','Military Grade Logic','Alberta Local Engineering'].map(item=>`
+          <div class="flex items-center gap-3 text-sm font-black uppercase tracking-widest">
+            ${getIcon('Check',4)} ${item}
+          </div>
+          `).join('')}
+        </div>
+      </div>
+      <div class="relative rounded-[3rem] overflow-hidden border border-white/10 aspect-video lg:aspect-square">
+        <img src="https://images.unsplash.com/photo-1518432031352-d6fc5c10da5a?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover grayscale" />
+        <div class="absolute inset-0 bg-orange-500/10 mix-blend-overlay"></div>
+      </div>
+    </section>
+  </div>
+  `;
+}
+
+// ------------------ GRID ------------------
+
+function renderGrid(title, data){
+  return `
+  <div class="animate-in fade-in slide-in-from-bottom-5 duration-700">
+    <div class="mb-16">
+      <h2 class="text-5xl font-black text-white mb-4 uppercase tracking-tighter">${title}</h2>
+      <div class="w-20 h-1 bg-orange-500"></div>
+    </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+      ${Object.values(data).map(s=>`
+      <div onclick="navigateTo('detail', DATA['${s.id.toUpperCase()}']||DATA.SERVICES['${s.id.toUpperCase()}']||DATA.SUBSCRIPTIONS['${s.id.toUpperCase()}']||DATA.RANDOM['${s.id.toUpperCase()}'])" class="cursor-pointer group flex flex-col bg-[#080808] border border-white/5 rounded-[3rem] overflow-hidden hover:border-orange-500/30 transition-all">
+        <div class="h-56 overflow-hidden relative">
+          <img src="${s.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000" />
+          <div class="absolute inset-0 bg-gradient-to-t from-[#080808] to-transparent"></div>
+          <div class="absolute bottom-4 left-6 flex items-center gap-3">
+            <div class="p-3 bg-orange-500 rounded-2xl text-black">${getIcon(s.iconName,5)}</div>
+            <h3 class="text-2xl font-black text-white uppercase">${s.name}</h3>
+          </div>
+        </div>
+        <div class="p-8 flex-grow flex flex-col">
+          <p class="text-gray-500 text-xs italic mb-8">"${s.headline}"</p>
+          <div class="mt-auto flex justify-between items-center">
+            <span class="text-3xl font-black text-orange-500">$${s.basePrice}</span>
+            <span class="text-[10px] font-black uppercase text-gray-600 tracking-widest group-hover:text-white transition-colors">Configure →</span>
+          </div>
+        </div>
+      </div>
+      `).join('')}
+    </div>
+  </div>
+  `;
+}
+
+// ------------------ PRODUCT DETAIL ------------------
+
+function renderDetail(product){
+  let formData = {};
+  product.customFields.forEach(f=>{
+    if(f.type==='select') formData[f.id]=f.options[0];
+    if(f.type==='list') formData[f.id]=[];
+    if(f.type==='number') formData[f.id]=f.default||1;
+    if(f.type==='text') formData[f.id]='';
+  });
+  let price = product.basePrice;
+
+  return `
+  <button onclick="navigateTo('home')" class="flex items-center gap-2 text-gray-500 hover:text-orange-500 font-black uppercase text-xs tracking-widest mb-10">
+    ${getIcon('ArrowLeft',4)} Return
+  </button>
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-16">
+    <div class="relative rounded-[3rem] overflow-hidden border border-white/10 h-[600px]">
+      <img src="${product.image}" class="w-full h-full object-cover" />
+      <div class="absolute inset-0 bg-gradient-to-t from-black to-transparent"></div>
+      <div class="absolute bottom-10 left-10">
+        <div class="p-4 bg-orange-500 rounded-3xl text-black inline-block mb-4">${getIcon(product.iconName,6)}</div>
+        <h2 class="text-5xl font-black text-white uppercase">${product.name}</h2>
+      </div>
+    </div>
+    <div class="flex flex-col">
+      <p class="text-gray-400 mb-10 leading-relaxed text-sm">${product.fullDesc}</p>
+      <div class="mt-auto p-10 bg-white/5 rounded-[2.5rem] border border-white/10 flex flex-col md:flex-row justify-between items-center gap-6">
+        <div>
+          <span class="text-[10px] text-gray-500 font-black uppercase tracking-widest">Total Bounty</span>
+          <div class="text-5xl font-black text-white mt-1">$${price}</div>
+        </div>
+        <button onclick="addToCart({...product, price, name: product.name+' Custom'})" class="px-12 py-5 bg-orange-500 text-black font-black rounded-2xl hover:scale-105 transition-all text-sm uppercase tracking-widest flex items-center gap-3">
+          ${getIcon('ShoppingCart',5)} Add to Haul
+        </button>
+      </div>
+    </div>
+  </div>
+  `;
+}
+
+// ------------------ CART ------------------
+
+function renderCart(){
+  return `
+  <div class="fixed inset-0 z-[100] flex justify-end">
+    <div class="absolute inset-0 bg-black/90 backdrop-blur-md" onclick="showCart=false; renderApp()"></div>
+    <div class="relative w-full max-w-md bg-[#080808] border-l border-orange-500/20 h-full p-8 flex flex-col">
+      <div class="flex justify-between items-center mb-10">
+        <h3 class="text-2xl font-black text-orange-500 flex items-center gap-2 uppercase tracking-tighter">
+          ${getIcon('Package',6)} YOUR HAUL
+        </h3>
+        <button onclick="showCart=false; renderApp()">${getIcon('X',6)}</button>
+      </div>
+      <div class="flex-grow overflow-y-auto space-y-4">
+        ${cart.length>0?cart.map(item=>`
+        <div class="p-4 rounded-2xl border border-white/5 bg-white/5 flex gap-4 items-center">
+          <div class="flex-grow">
+            <div class="font-bold text-sm text-white">${item.name}</div>
+            <div class="text-orange-500 font-mono text-xs">$${item.price}</div>
+          </div>
+          <button onclick="removeFromCart('${item.cartId}')">${getIcon('X',4)}</button>
+        </div>
+        `).join(''):`<div class="text-center py-20 text-gray-600 text-xs font-bold uppercase tracking-widest">Haul is empty</div>`}
+      </div>
+      <div class="pt-8 border-t border-white/10 mt-4">
+        <div class="flex justify-between items-center mb-6">
+          <span class="text-gray-500 font-bold uppercase text-xs tracking-widest">Total</span>
+          <span class="text-3xl font-black text-orange-500">$${totalPrice()}</span>
+        </div>
+        <button onclick="handleCheckout()" class="w-full py-5 rounded-2xl bg-[#FF6B00] text-black font-black text-lg hover:bg-orange-400 disabled:opacity-50 disabled:cursor-not-allowed transition-all">
+          PROCEED TO STRIPE
+        </button>
+      </div>
+    </div>
+  </div>
+  `;
+}
 
 </script>
 </body>
